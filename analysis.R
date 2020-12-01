@@ -12,7 +12,10 @@ library(ggplot2)
 # 
 # outbreak.size(results)
 
-# Initialize an empty data frame in which store results
+# 
+
+
+# # Initialize an empty data frame in which store results
 results <- data.frame(num.groups = numeric(),
                       group.size = numeric(),
                       outbreak.size = numeric())
@@ -23,7 +26,7 @@ for(i in seq(from = 500, to = 10000, by = 500)) {
   for(j in seq(from = 1, to = 20, by = 1)) {
     num.groups <- i
     group.size <- j
-    
+
     # Create new data frame to store a single row of data for this run
     result <- data.frame(num.groups = i,
                          group.size = j,
@@ -33,10 +36,15 @@ for(i in seq(from = 500, to = 10000, by = 500)) {
   }
 }
 
-# Save the results
+# Save the results -- commented out for now to avoid overwrites
 write.csv(results, "results.csv")
 
-# Visualize the results
+
+
+# =============================================================================
+# --- Visualize the results ---
+
+# Heat map: outbreak size by number of groups and group size
 ggplot(data = results, aes(x = num.groups,
                            y = group.size,
                            z = outbreak.size)) +
