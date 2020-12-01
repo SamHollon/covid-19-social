@@ -1,6 +1,6 @@
 # Create the initial population
-N = 10000  # total population
-I.prop = 0.05  # proportion infected
+N = 1000  # total population
+I.prop = 0.01  # proportion infected
 I = round(N * I.prop)  # initial number infected
 S = N - I
 R = 0
@@ -104,4 +104,10 @@ spread <- function(population = pop, timestep = 0, history = NULL) {
     # and with timestep incremented by 1.
     spread(pop.copy, timestep + 1, hist.df)
   }
+}
+
+
+# Outbreak size function. Calculates I + R at last timestep of an outbreak.
+outbreak.size <- function(outbreak) {
+  return(outbreak$I[length(outbreak$I)] + outbreak$R[length(outbreak$R)]) 
 }
