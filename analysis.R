@@ -1,7 +1,8 @@
+# Libraries
+library(ggplot2)
+
+
 # NO LONGER NEEDED -- VISUALIZES A SINGLE OUTBREAK
-# # Libraries
-# library(ggplot2)
-# 
 # # Call the spread function and save the result
 # results <- spread()
 # 
@@ -19,7 +20,7 @@ results <- data.frame(num.groups = numeric(),
 # Loop through values for num.groups
 for(i in seq(from = 500, to = 10000, by = 500)) {
   # Loop through values for group.size
-  for(j in seq(from = 5, to = 100, by = 5)) {
+  for(j in seq(from = 1, to = 20, by = 1)) {
     num.groups <- i
     group.size <- j
     
@@ -31,3 +32,12 @@ for(i in seq(from = 500, to = 10000, by = 500)) {
     results[nrow(results) + 1,] <- result
   }
 }
+
+# Save the results
+write.csv(results, "results.csv")
+
+# Visualize the results
+ggplot(data = results, aes(x = num.groups,
+                           y = group.size,
+                           z = outbreak.size)) +
+  stat_summary_2d(bins = c(19, 19))

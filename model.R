@@ -13,7 +13,7 @@ pop = c(rep(0, S), rep(1, R), rep(2, I))
 # Set other model parameters
 p.transmit <- 1
 num.groups <- 5000
-group.size <- 25
+group.size <- 10
 t.recovery <- 30
 
 # Spread function
