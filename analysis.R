@@ -12,7 +12,7 @@
 # =============================================================================
 # --- source scripts ---
 
-source("model.R")
+source("functions.R")
 
 
 
@@ -146,7 +146,7 @@ results.gathering.size.gatherings.per.hour <-
 
 # Loop through values for gathering size
 for(i in seq.gathering.size) {
-  # Loop through values for transmission probability
+  # Loop through values for gatherings per hour
   for(j in seq.gatherings.per.hour) {
     # Create new data frame to store a single row of data for this run
     result <- data.frame(gathering.size = i,
@@ -199,7 +199,7 @@ results.gathering.size.t.recovery <- data.frame(gathering.size = numeric(),
 
 # Loop through values for gathering size
 for(i in seq.gathering.size) {
-  # Loop through values for transmission probability
+  # Loop through values for recovery time
   for(j in seq.t.recovery) {
     # Create new data frame to store a single row of data for this run
     result <- data.frame(gathering.size = i,
