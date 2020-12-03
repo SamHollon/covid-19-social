@@ -136,6 +136,34 @@ for(i in seq.t.recovery) {
 
 
 # =============================================================================
+# --- sensitive analysis: gathering size & gatherings per hour ---
+
+# Initialize an empty data frame to store results
+results.gathering.size.gatherings.per.hour <-
+  data.frame(gathering.size = numeric(),
+             gatherings.per.hour = numeric(),
+             outbreak.size = numeric())
+
+# Loop through values for gathering size
+for(i in seq.gathering.size) {
+  # Loop through values for transmission probability
+  for(j in seq.gatherings.per.hour) {
+    # Create new data frame to store a single row of data for this run
+    result <- data.frame(gathering.size = i,
+                         gatherings.per.hour = j,
+                         outbreak.size =
+                           outbreak.size(outbreak(gathering.size = i,
+                                                  gatherings.per.hour = j)))
+    
+    # Add the results to the results data frame
+    results.gathering.size.gatherings.per.hour[
+      nrow(results.gathering.size.gatherings.per.hour) + 1,] <- result
+  }
+}
+
+
+
+# =============================================================================
 # --- sensitive analysis: gathering size & transmission probability ---
 
 # Initialize an empty data frame to store results
@@ -164,14 +192,44 @@ for(i in seq.gathering.size) {
 # =============================================================================
 # --- sensitive analysis: gathering size & recovery time ---
 
+# Initialize an empty data frame to store results
+results.gathering.size.t.recovery <- data.frame(gathering.size = numeric(),
+                                                t.recovery = numeric(),
+                                                outbreak.size = numeric())
+
+# Loop through values for gathering size
+for(i in seq.gathering.size) {
+  # Loop through values for transmission probability
+  for(j in seq.t.recovery) {
+    # Create new data frame to store a single row of data for this run
+    result <- data.frame(gathering.size = i,
+                         t.recovery = j,
+                         outbreak.size =
+                           outbreak.size(outbreak(gathering.size = i,
+                                                  t.recovery = j)))
+    
+    # Add the results to the results data frame
+    results.gathering.size.t.recovery[
+      nrow(results.gathering.size.t.recovery) + 1,] <- result
+  }
+}
 
 
 
 # =============================================================================
 # --- save the results ---
 
-# Save the results as CSVs
-write.csv(results.gathering.size, "results.gathering.size.csv")
-write.csv(results.gatherings.per.hour, "results.gatherings.per.hour.csv")
-write.csv(results.p.transmit, "results.p.transmit.csv")
-write.csv(results.t.recovery, "results.t.recovery.csv")
+write.csv(results.gathering.size,
+          "results.gathering.size.csv")
+write.csv(results.gatherings.per.hour,
+          "results.gatherings.per.hour.csv")
+write.csv(results.p.transmit,
+          "results.p.transmit.csv")
+write.csv(results.t.recovery,
+          "results.t.recovery.csv")
+write.csv(results.gathering.size.gatherings.per.hour,
+          "results.gathering.size.gatherings.per.hour.csv")
+write.csv(results.gathering.size.p.transmit,
+          "results.gathering.size.p.transmit.csv")
+write.csv(results.gathering.size.t.recovery,
+          "results.gathering.size.t.recovery.csv")
