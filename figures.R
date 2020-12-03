@@ -122,7 +122,7 @@ results.gathering.size.gatherings.per.hour$outcome <-
 plot.gathering.size.gatherings.per.hour <-
   ggplot(data = results.gathering.size.gatherings.per.hour,
          aes(x = gathering.size, y = gatherings.per.hour, col = outcome)) +
-  geom_point(size = 6) +
+  geom_point(size = 4) +
   xlab("Members Per Gathering") +
   ylab("Gatherings Per Hour") +
   labs(color = "Cases During Outbreak") +
@@ -132,8 +132,7 @@ plot.gathering.size.gatherings.per.hour <-
         panel.background = element_rect(fill = "grey99",
                                         colour = "grey80"),
         plot.title = element_text(hjust = 0.5),
-        axis.ticks = element_blank(),
-        legend.position = "top")
+        axis.ticks = element_blank())
 
 
 
@@ -151,7 +150,7 @@ results.gathering.size.p.transmit$outcome <-
 plot.gathering.size.p.transmit <-
   ggplot(data = results.gathering.size.p.transmit,
          aes(x = gathering.size, y = p.transmit, col = outcome)) +
-  geom_point(size = 6) +
+  geom_point(size = 4) +
   xlab("Members Per Gathering") +
   ylab("Probability of Transmission") +
   labs(color = "Cases During Outbreak") +
@@ -161,8 +160,7 @@ plot.gathering.size.p.transmit <-
         panel.background = element_rect(fill = "grey99",
                                         colour = "grey80"),
         plot.title = element_text(hjust = 0.5),
-        axis.ticks = element_blank(),
-        legend.position = "top")
+        axis.ticks = element_blank())
 
 
 
@@ -180,7 +178,7 @@ results.gathering.size.t.recovery$outcome <-
 plot.gathering.size.t.recovery <-
   ggplot(data = results.gathering.size.t.recovery,
          aes(x = gathering.size, y = t.recovery, col = outcome)) +
-  geom_point(size = 6) +
+  geom_point(size = 4) +
   xlab("Members Per Gathering") +
   ylab("Time Until Recovery (time steps)") +
   labs(color = "Cases During Outbreak") +
@@ -190,34 +188,24 @@ plot.gathering.size.t.recovery <-
         panel.background = element_rect(fill = "grey99",
                                         colour = "grey80"),
         plot.title = element_text(hjust = 0.5),
-        axis.ticks = element_blank(),
-        legend.position = "top")
+        axis.ticks = element_blank())
 
 
 
 # =============================================================================
 # --- save figures ---
 
-# Begin PDF for regular scatter plots
-pdf("scatter.plots.pdf", height = 4, width = 6)
+# Begin PDF
+pdf("figures.pdf", height = 4, width = 6)
 
 # Add each plot
 plot.gathering.size
 plot.gatherings.per.hour
 plot.p.transmit
 plot.t.recovery
-
-# End PDF for regular scatter plots
-dev.off()
-
-
-# Begin PDF for color-coded scatter plots
-pdf("dot.grids.pdf", height = 8, width = 8)
-
-# Add each plot
 plot.gathering.size.gatherings.per.hour
 plot.gathering.size.p.transmit
 plot.gathering.size.t.recovery
 
-# End PDF for color-coded scatter plots
+# End PDF
 dev.off()
