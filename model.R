@@ -18,7 +18,7 @@
 #    gatherings.per.hour is the average number of gatherings each person
 #       attends per hour (default 2/3)
 #    p.transmit is the probability of transmission (default 0.1475)
-#    group.size is the number of members per gathering (default 10)
+#    gathering.size is the number of members per gathering (default 10)
 #    t.recovery is the number of time steps until an infected person recovers
 #       (default 240)
 
@@ -28,7 +28,7 @@ outbreak <- function(N = 1000,
                    gatherings.per.hour = 2/3,
                    p.transmit = 0.1475,
                    t.recovery = 240,
-                   group.size = 10) {
+                   gathering.size = 10) {
   
   # Create the initial population
   I <- round(N * I.prop)  # initial number infected
@@ -66,8 +66,8 @@ outbreak <- function(N = 1000,
     # Randomly sample the population a number of times equal to num.groups.
     # Each sample corresponds to a social gathering.
     for(i in num.groups) {
-      # Sample a number of indices equal to group.size
-      indices <- sample(1:length(pop.copy), group.size)
+      # Sample a number of indices equal to gathering.size
+      indices <- sample(1:length(pop.copy), gathering.size)
       
       # Create a counter to store the number of infected people in the group
       I.here <- 0

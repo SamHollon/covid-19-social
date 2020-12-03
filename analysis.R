@@ -37,26 +37,29 @@ seq.gathering.size <- seq(from = 1, to = 20, by = 1)
 seq.gatherings.per.hour <- seq(from = 0.2, to = 4, by = 0.2)
 
 # Sequence of transmission probabilities to simulate
-seq.p.transmit <- seq(from = 0.05, to = 1, by = 0.05)
+seq.p.transmit <- seq(from = 0.02, to = 0.4, by = 0.02)
+
+# Sequence of transmission probabilities to simulate
+seq.t.recovery <- seq(from = 48, to = 960, by = 48)
 
 
 # =============================================================================
 # --- sensitive analysis: gathering size ---
 
 # Initialize an empty data frame to store results
-results.gathering.size <- data.frame(group.size = numeric(),
+results.gathering.size <- data.frame(gathering.size = numeric(),
                                      outbreak.size = numeric())
 
-# Loop through values for group.size
+# Loop through values for gathering.size
 for(i in seq.gathering.size) {
   # Repeat a number of times equal to reps
   for(j in 1:reps) {
-    group.size <- i
+    gathering.size <- i
     
     # Create new data frame to store a single row of data for this run
-    result <- data.frame(group.size = i,
+    result <- data.frame(gathering.size = i,
                          outbreak.size =
-                           outbreak.size(outbreak(group.size = i)))
+                           outbreak.size(outbreak(gathering.size = i)))
     
     results.gathering.size[nrow(results.gathering.size) + 1,] <- result
   }
@@ -64,7 +67,7 @@ for(i in seq.gathering.size) {
 
 # Visualize the results in a scatter plot with a polynomial fit
 plot.gathering.size <- ggplot(data = results.gathering.size,
-                              aes(x = group.size,
+                              aes(x = gathering.size,
                                   y = outbreak.size)) +
   geom_point(size = 3, color = "#04bcc6", alpha = 0.15) +
   xlab("Members Per Gathering") +
@@ -85,16 +88,16 @@ plot.gathering.size <- ggplot(data = results.gathering.size,
 results.gatherings.per.hour <- data.frame(gatherings.per.hour = numeric(),
                                           outbreak.size = numeric())
 
-# Loop through values for group.size
+# Loop through values for gathering.size
 for(i in seq.gatherings.per.hour) {
   # Repeat a number of times equal to reps
   for(j in 1:reps) {
-    group.size <- i
+    gathering.size <- i
     
     # Create new data frame to store a single row of data for this run
     result <- data.frame(gatherings.per.hour = i,
                          outbreak.size =
-                           outbreak.size(outbreak(group.size = i)))
+                           outbreak.size(outbreak(gatherings.per.hour = i)))
     
     results.gatherings.per.hour[
       nrow(results.gatherings.per.hour) + 1,] <- result
@@ -108,6 +111,7 @@ plot.gatherings.per.hour <- ggplot(data = results.gatherings.per.hour,
   geom_point(size = 3, color = "#04bcc6", alpha = 0.15) +
   xlab("Gatherings Per Hour") +
   ylab("Cases Throughout Outbreak") +
+  ylim(0, 1000) +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.ticks = element_blank(),
@@ -124,16 +128,16 @@ plot.gatherings.per.hour <- ggplot(data = results.gatherings.per.hour,
 results.p.transmit <- data.frame(p.transmit = numeric(),
                                  outbreak.size = numeric())
 
-# Loop through values for group.size
+# Loop through values for gathering.size
 for(i in seq.p.transmit) {
   # Repeat a number of times equal to reps
   for(j in 1:reps) {
-    group.size <- i
+    gathering.size <- i
     
     # Create new data frame to store a single row of data for this run
     result <- data.frame(p.transmit = i,
                          outbreak.size =
-                           outbreak.size(outbreak(group.size = i)))
+                           outbreak.size(outbreak(p.transmit = i)))
     
     results.p.transmit[
       nrow(results.p.transmit) + 1,] <- result
@@ -156,15 +160,59 @@ plot.p.transmit <- ggplot(data = results.p.transmit,
 
 
 
+
+# =============================================================================
+# --- sensitive analysis: recovery time ---
+
+# Initialize an empty data frame to store results
+results.t.recovery <- data.frame(t.recovery = numeric(),
+                                 outbreak.size = numeric())
+
+# Loop through values for gathering.size
+for(i in seq.t.recovery) {
+  # Repeat a number of times equal to reps
+  for(j in 1:reps) {
+    gathering.size <- i
+    
+    # Create new data frame to store a single row of data for this run
+    result <- data.frame(t.recovery = i,
+                         outbreak.size =
+                           outbreak.size(outbreak(t.recovery = i)))
+    
+    results.t.recovery[
+      nrow(results.t.recovery) + 1,] <- result
+  }
+}
+
+# Visualize the results in a scatter plot with a polynomial fit
+plot.t.recovery <- ggplot(data = results.t.recovery,
+                          aes(x = t.recovery,
+                              y = outbreak.size)) +
+  geom_point(size = 3, color = "#04bcc6", alpha = 0.15) +
+  xlab("Time Until Removal (timesteps)") +
+  ylab("Cases Throughout Outbreak") +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        panel.background = element_rect(fill = "grey99",
+                                        colour = "grey80"),
+        plot.title = element_text(hjust = 0.5))
+
+
+
 # =============================================================================
 # --- save the results and plots ---
 
 # Save the results as CSVs
 write.csv(results.gathering.size, "results.gathering.size.csv")
 write.csv(results.gatherings.per.hour, "results.gatherings.per.hour.csv")
+write.csv(results.p.transmit, "results.p.transmit.csv")
+write.csv(results.t.recovery, "results.t.recovery.csv")
 
 # Save the figures as a PDF
 pdf("figures.pdf", height = 4, width = 6)
 plot.gathering.size
 plot.gatherings.per.hour
+plot.p.transmit
+plot.t.recovery
 dev.off()
