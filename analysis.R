@@ -33,8 +33,11 @@ reps <- 10
 # Sequence of gathering sizes (number of members) to simulate
 seq.gathering.size <- seq(from = 1, to = 20, by = 1)
 
-# Sequence of gatherings per hour (number of members) to simulate
+# Sequence of gatherings per hour to simulate
 seq.gatherings.per.hour <- seq(from = 0.2, to = 4, by = 0.2)
+
+# Sequence of transmission probabilities to simulate
+seq.p.transmit <- seq(from = 0.05, to = 1, by = 0.05)
 
 
 # =============================================================================
@@ -80,7 +83,7 @@ plot.gathering.size <- ggplot(data = results.gathering.size,
 
 # Initialize an empty data frame to store results
 results.gatherings.per.hour <- data.frame(gatherings.per.hour = numeric(),
-                                     outbreak.size = numeric())
+                                          outbreak.size = numeric())
 
 # Loop through values for group.size
 for(i in seq.gatherings.per.hour) {
@@ -115,12 +118,53 @@ plot.gatherings.per.hour <- ggplot(data = results.gatherings.per.hour,
 
 
 # =============================================================================
+# --- sensitive analysis: transmission probability ---
+
+# Initialize an empty data frame to store results
+results.p.transmit <- data.frame(p.transmit = numeric(),
+                                 outbreak.size = numeric())
+
+# Loop through values for group.size
+for(i in seq.p.transmit) {
+  # Repeat a number of times equal to reps
+  for(j in 1:reps) {
+    group.size <- i
+    
+    # Create new data frame to store a single row of data for this run
+    result <- data.frame(p.transmit = i,
+                         outbreak.size =
+                           outbreak.size(outbreak(group.size = i)))
+    
+    results.p.transmit[
+      nrow(results.p.transmit) + 1,] <- result
+  }
+}
+
+# Visualize the results in a scatter plot with a polynomial fit
+plot.p.transmit <- ggplot(data = results.p.transmit,
+                                   aes(x = p.transmit,
+                                       y = outbreak.size)) +
+  geom_point(size = 3, color = "#04bcc6", alpha = 0.15) +
+  xlab("Probability of Transmission") +
+  ylab("Cases Throughout Outbreak") +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        panel.background = element_rect(fill = "grey99",
+                                        colour = "grey80"),
+        plot.title = element_text(hjust = 0.5))
+
+
+
+# =============================================================================
 # --- save the results and plots ---
 
 # Save the results as CSVs
 write.csv(results.gathering.size, "results.gathering.size.csv")
+write.csv(results.gatherings.per.hour, "results.gatherings.per.hour.csv")
 
 # Save the figures as a PDF
 pdf("figures.pdf", height = 4, width = 6)
 plot.gathering.size
+plot.gatherings.per.hour
 dev.off()
