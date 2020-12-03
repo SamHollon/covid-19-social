@@ -1,7 +1,7 @@
 #
 #
 # FIGURES
-# Creates figures and saves them to PDFs
+# Creates figures and saves them to PDFs.
 #
 #
 
