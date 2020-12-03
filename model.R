@@ -1,47 +1,67 @@
-# Create the initial population
-N = 1000  # total population
-I.prop = 0.01  # proportion infected
-I = round(N * I.prop)  # initial number infected
-S = N - I
-R = 0
-t.max = 1000  # maximum timestep (run duration)
-pop = c(rep(0, S), rep(1, R), rep(2, I))
-# Value = 0 means susceptible
-# Value = 1 means removed
-# Value >= 2 means infected
+#
+#
+# FUNCTIONS
+# Defines functions for use in other scripts.
+#
+#
 
-# Set other model parameters
-# Average contacts per person per hour
-contacts.per.hour <- 16 / 24
-p.transmit <- 0.1475
-group.size <- 20
-num.groups <- round(N * contacts.per.hour)
-t.recovery <- 240
 
-# Spread function
-# 1st arg = population vector for previous time period
-# 2nd arg = current time step
-spread <- function(population = pop, history = NULL) {
-  # Save a new copy of the population
-  pop.copy <- population
+
+# =============================================================================
+# --- outbreak function ---
+
+# ARGUMENTS
+#    N is the total number of people in the population (default 1000)
+#    I.prop is the proportion of people infected at the start of the run
+#      (default 0.01)
+#    t.max is the number of time steps before the model stops (detault 1000)
+#    gatherings.per.hour is the average number of gatherings each person
+#       attends per hour (default 2/3)
+#    p.transmit is the probability of transmission (default 0.1475)
+#    group.size is the number of members per gathering (default 10)
+#    t.recovery is the number of time steps until an infected person recovers
+#       (default 240)
+
+outbreak <- function(N = 1000,
+                   I.prop = 0.01,
+                   t.max = 3000,
+                   gatherings.per.hour = 2/3,
+                   p.transmit = 0.1475,
+                   t.recovery = 240,
+                   group.size = 10) {
   
-  # If history is null
-  if(is.null(history)) {
-    # Create a new data frame to store the population history.
-    hist.df <- data.frame(time = numeric(),
-                          S = numeric(),
-                          I = numeric(),
-                          R = numeric())
-  }
+  # Create the initial population
+  I <- round(N * I.prop)  # initial number infected
+  S <- N - I  # initial number susceptible
+  
+  # Record the states of each member of the population in a vector.
+  pop <- c(rep(0, S), rep(2, I))
+  # Value = 0 means susceptible
+  # Value = 1 means removed
+  # Value >= 2 means infected
+  
+  
+  # Set the number of social gatherings per hour for the entire population
+  num.groups <- round(N * gatherings.per.hour)
+  
+  # Save a new copy of the population
+  pop.copy <- pop
+  
+  # Create a new data frame to store the population history.
+  history <- data.frame(time = numeric(),
+                        S = numeric(),
+                        I = numeric(),
+                        R = numeric())
   
   # Add a single row containing the counts of each population type.
-  hist.df[nrow(hist.df) + 1,] <- list(0,
+  history[nrow(history) + 1,] <- list(0,
                                       length(pop.copy[pop.copy == 0]),
                                       length(pop.copy[pop.copy >= 2]),
                                       length(pop.copy[pop.copy == 1]))
   
   
-  # At each timestep...
+  # BEGIN PROCEDURE FOR EACH TIME STEP
+  
   for(timestep in 1:t.max) {
     # Randomly sample the population a number of times equal to num.groups.
     # Each sample corresponds to a social gathering.
@@ -84,29 +104,40 @@ spread <- function(population = pop, history = NULL) {
         pop.copy[i] <- pop.copy[i] + 1 / t.recovery
         
         # If the person's state >= 3, change the person's status to
-        # recovered.
+        # removed.
         if(pop.copy[i] >= 3) {
           pop.copy[i] <- 1
         }
       }
     }
     
-    # Append the updated S, I, and R counts to hist.df
+    # Append the updated S, I, and R counts to history
     # Add a single row containing the counts of each population type.
-    hist.df[nrow(hist.df) + 1,] <- list(timestep,
+    history[nrow(history) + 1,] <- list(timestep,
                                         length(pop.copy[pop.copy == 0]),
                                         length(pop.copy[pop.copy >= 2]),
                                         length(pop.copy[pop.copy == 1]))
   }
-  # If we're about to the maximum time step...
-  if (timestep == t.max) {
-    # Output the population history
-    return(hist.df)
-  }
+  
+  # END PROCEDURE FOR EACH TIME STEP
+  
+  
+  # Output the population history. This output is a data frame.
+  return(history)
 }
 
 
-# Outbreak size function. Calculates I + R at last timestep of an outbreak.
-outbreak.size <- function(outbreak) {
-  return(outbreak$I[length(outbreak$I)] + outbreak$R[length(outbreak$R)]) 
+
+# =============================================================================
+# --- outbreak size function ---
+
+# SUMMARY: Calculates I + R at last time step of an outbreak. This is the total
+# number of cases that occur throughout the outbreak, i.e, what we're calling
+# the "outbreak size."
+
+# ARGUMENT
+#    df is the output of the outbreak function (this is a data frame)
+
+outbreak.size <- function(df) {
+  return(df$I[length(df$I)] + df$R[length(df$R)]) 
 }
