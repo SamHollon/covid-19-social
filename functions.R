@@ -14,7 +14,7 @@
 #    N is the total number of people in the population (default 1000)
 #    I.prop is the proportion of people infected at the start of the run
 #      (default 0.01)
-#    t.max is the number of time steps before the model stops (detault 1000)
+#    t.max is the number of time steps before the model stops (default 3000)
 #    gatherings.per.hour is the average number of gatherings each person
 #       attends per hour (default 2/3)
 #    p.transmit is the probability of transmission (default 0.1475)
