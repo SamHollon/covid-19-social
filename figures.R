@@ -1,7 +1,7 @@
 #
 #
 # FIGURES
-# Creates figures and saves them to a PDF
+# Creates figures and saves them to PDFs
 #
 #
 
@@ -20,7 +20,12 @@ results.gathering.size <- read.csv("results.gathering.size.csv")
 results.gatherings.per.hour <- read.csv("results.gatherings.per.hour.csv")
 results.p.transmit <- read.csv("results.p.transmit.csv")
 results.t.recovery <- read.csv("results.t.recovery.csv")
-
+results.gathering.size.gatherings.per.hour <-
+  read.csv("results.gathering.size.gatherings.per.hour.csv")
+results.gathering.size.p.transmit <-
+  read.csv("results.gathering.size.p.transmit.csv")
+results.gathering.size.t.recovery <-
+  read.csv("results.gathering.size.t.recovery.csv")
 
 
 # =============================================================================
@@ -32,7 +37,7 @@ plot.gathering.size <- ggplot(data = results.gathering.size,
                                   y = outbreak.size)) +
   geom_point(size = 3, color = "#04bcc6", alpha = 0.15) +
   xlab("Members Per Gathering") +
-  ylab("Cases Throughout Outbreak") +
+  ylab("Cases During Outbreak") +
   ylim(0, 1000) +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
@@ -52,7 +57,7 @@ plot.gatherings.per.hour <- ggplot(data = results.gatherings.per.hour,
                                        y = outbreak.size)) +
   geom_point(size = 3, color = "#04bcc6", alpha = 0.15) +
   xlab("Gatherings Per Hour") +
-  ylab("Cases Throughout Outbreak") +
+  ylab("Cases During Outbreak") +
   ylim(0, 1000) +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
@@ -72,7 +77,7 @@ plot.p.transmit <- ggplot(data = results.p.transmit,
                               y = outbreak.size)) +
   geom_point(size = 3, color = "#04bcc6", alpha = 0.15) +
   xlab("Probability of Transmission") +
-  ylab("Cases Throughout Outbreak") +
+  ylab("Cases During Outbreak") +
   ylim(0, 1000) +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
@@ -92,7 +97,7 @@ plot.t.recovery <- ggplot(data = results.t.recovery,
                               y = outbreak.size)) +
   geom_point(size = 3, color = "#04bcc6", alpha = 0.15) +
   xlab("Time Until Removal (timesteps)") +
-  ylab("Cases Throughout Outbreak") +
+  ylab("Cases During Outbreak") +
   ylim(0, 1000) +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
@@ -104,10 +109,97 @@ plot.t.recovery <- ggplot(data = results.t.recovery,
 
 
 # =============================================================================
+# --- sensitive analysis: gathering size & gatherings per hour ---
+
+# Classify outbreak sizes in results.gathering.size.gatherings.per.hour into
+# three categories by outbreak size: under 150, over 850, or in between. Let's
+# call this new classification the "outcome" of a run.
+results.gathering.size.gatherings.per.hour$outcome <-
+  cut(results.gathering.size.gatherings.per.hour$outbreak.size,
+      breaks = c(0, 100, 900, Inf), labels = c("0-100", "101-900", "901-1000"))
+
+# Graph outcomes by gathering size and gatherings per hour
+plot.gathering.size.gatherings.per.hour <-
+  ggplot(data = results.gathering.size.gatherings.per.hour,
+         aes(x = gathering.size, y = gatherings.per.hour, col = outcome)) +
+  geom_point(size = 6) +
+  xlab("Members Per Gathering") +
+  ylab("Gatherings Per Hour") +
+  labs(color = "Cases During Outbreak") +
+  scale_color_manual(values = c("#04bcc6", "#fbde74", "#fe7370")) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill = "grey99",
+                                        colour = "grey80"),
+        plot.title = element_text(hjust = 0.5),
+        axis.ticks = element_blank(),
+        legend.position = "top")
+
+
+
+# =============================================================================
+# --- sensitive analysis: gathering size & transmission probability ---
+
+# Classify outbreak sizes in results.gathering.size.p.transmit into three
+# categories by outbreak size: under 150, over 850, or in between. Let's call
+# this new classification the "outcome" of a run.
+results.gathering.size.p.transmit$outcome <-
+  cut(results.gathering.size.p.transmit$outbreak.size,
+      breaks = c(0, 100, 900, Inf), labels = c("0-100", "101-900", "901-1000"))
+
+# Graph outcomes by gathering size and gatherings per hour
+plot.gathering.size.p.transmit <-
+  ggplot(data = results.gathering.size.p.transmit,
+         aes(x = gathering.size, y = p.transmit, col = outcome)) +
+  geom_point(size = 6) +
+  xlab("Members Per Gathering") +
+  ylab("Probability of Transmission") +
+  labs(color = "Cases During Outbreak") +
+  scale_color_manual(values = c("#04bcc6", "#fbde74", "#fe7370")) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill = "grey99",
+                                        colour = "grey80"),
+        plot.title = element_text(hjust = 0.5),
+        axis.ticks = element_blank(),
+        legend.position = "top")
+
+
+
+# =============================================================================
+# --- sensitive analysis: gathering size & recovery time ---
+
+# Classify outbreak sizes in results.gathering.size.t.recovery into three
+# categories by outbreak size: under 150, over 850, or in between. Let's call
+# this new classification the "outcome" of a run.
+results.gathering.size.t.recovery$outcome <-
+  cut(results.gathering.size.t.recovery$outbreak.size,
+      breaks = c(0, 100, 900, Inf), labels = c("0-100", "101-900", "901-1000"))
+
+# Graph outcomes by gathering size and gatherings per hour
+plot.gathering.size.t.recovery <-
+  ggplot(data = results.gathering.size.t.recovery,
+         aes(x = gathering.size, y = t.recovery, col = outcome)) +
+  geom_point(size = 6) +
+  xlab("Members Per Gathering") +
+  ylab("Time Until Recovery (time steps)") +
+  labs(color = "Cases During Outbreak") +
+  scale_color_manual(values = c("#04bcc6", "#fbde74", "#fe7370")) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill = "grey99",
+                                        colour = "grey80"),
+        plot.title = element_text(hjust = 0.5),
+        axis.ticks = element_blank(),
+        legend.position = "top")
+
+
+
+# =============================================================================
 # --- save figures ---
 
-# Begin PDF
-pdf("figures.pdf", height = 4, width = 6)
+# Begin PDF for regular scatter plots
+pdf("scatter.plots.pdf", height = 4, width = 6)
 
 # Add each plot
 plot.gathering.size
@@ -115,5 +207,17 @@ plot.gatherings.per.hour
 plot.p.transmit
 plot.t.recovery
 
-# End PDF
+# End PDF for regular scatter plots
+dev.off()
+
+
+# Begin PDF for color-coded scatter plots
+pdf("dot.grids.pdf", height = 8, width = 8)
+
+# Add each plot
+plot.gathering.size.gatherings.per.hour
+plot.gathering.size.p.transmit
+plot.gathering.size.t.recovery
+
+# End PDF for color-coded scatter plots
 dev.off()
