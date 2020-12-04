@@ -195,17 +195,26 @@ plot.gathering.size.t.recovery <-
 # =============================================================================
 # --- save figures ---
 
-# Begin PDF
-pdf("figures.pdf", height = 4, width = 6)
+# Begin PDF: standard scatter plots
+pdf("scatter.plots.pdf", height = 4, width = 6)
 
 # Add each plot
 plot.gathering.size
 plot.gatherings.per.hour
 plot.p.transmit
 plot.t.recovery
+
+# End PDF: standard scatter plots
+dev.off()
+
+
+# Begin PDF: dot grids
+pdf("dot.grids.pdf", height = 4, width = 6.5)
+
+# Add each plot
 plot.gathering.size.gatherings.per.hour
 plot.gathering.size.p.transmit
 plot.gathering.size.t.recovery
 
-# End PDF
+# End PDF: dot grids
 dev.off()
