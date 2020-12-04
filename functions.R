@@ -42,7 +42,7 @@ outbreak <- function(N = 1000,
   
   
   # Set the number of social gatherings per hour for the entire population
-  num.groups <- round(N * gatherings.per.hour)
+  num.groups <- round(N * gatherings.per.hour / gathering.size)
   
   # Save a new copy of the population
   pop.copy <- pop

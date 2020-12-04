@@ -96,7 +96,7 @@ plot.t.recovery <- ggplot(data = results.t.recovery,
                           aes(x = t.recovery,
                               y = outbreak.size)) +
   geom_point(size = 3, color = "#04bcc6", alpha = 0.15) +
-  xlab("Time Until Removal (timesteps)") +
+  xlab("Time Until Removal (time steps)") +
   ylab("Cases During Outbreak") +
   ylim(0, 1000) +
   theme(panel.grid.major = element_blank(),
@@ -180,7 +180,7 @@ plot.gathering.size.t.recovery <-
          aes(x = gathering.size, y = t.recovery, col = outcome)) +
   geom_point(size = 4) +
   xlab("Members Per Gathering") +
-  ylab("Time Until Recovery (time steps)") +
+  ylab("Time Until Removal (time steps)") +
   labs(color = "Cases During Outbreak") +
   scale_color_manual(values = c("#04bcc6", "#fbde74", "#fe7370")) +
   theme(panel.grid.major = element_blank(),
